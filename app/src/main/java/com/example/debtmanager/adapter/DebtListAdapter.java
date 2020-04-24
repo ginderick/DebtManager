@@ -1,9 +1,10 @@
 package com.example.debtmanager.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,12 +18,14 @@ import java.util.List;
 
 public class DebtListAdapter extends RecyclerView.Adapter<DebtListAdapter.DebtHolder> {
 
-    private List<DebtInfo> debts = new ArrayList<>();
-    private OnDeleteButtonClickListener onDeleteButtonClickListener;
+    public static final String TAG = DebtListAdapter.class.getSimpleName();
 
-    public DebtListAdapter(List<DebtInfo> debts, OnDeleteButtonClickListener onDeleteButtonClickListener) {
+    private List<DebtInfo> debts = new ArrayList<>();
+    private OnClickListener onClickListener;
+
+    public DebtListAdapter(List<DebtInfo> debts, OnClickListener onClickListener) {
         this.debts = debts;
-        this.onDeleteButtonClickListener = onDeleteButtonClickListener;
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
@@ -30,7 +33,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<DebtListAdapter.DebtHo
     public DebtHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recyclerview_item, parent, false);
-        return new DebtHolder(itemView);
+        return new DebtHolder(itemView, onClickListener);
     }
 
     @Override
@@ -38,14 +41,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<DebtListAdapter.DebtHo
         DebtInfo currentDebtInfo = debts.get(position);
         holder.textViewName.setText(currentDebtInfo.getName());
         holder.textViewAmount.setText(String.valueOf(currentDebtInfo.getDebtAmount()));
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onDeleteButtonClickListener != null ) {
-                        onDeleteButtonClickListener.onDeleteButtonClicked(currentDebtInfo);
-                }
-            }
-        });
     }
 
     @Override
@@ -57,24 +52,48 @@ public class DebtListAdapter extends RecyclerView.Adapter<DebtListAdapter.DebtHo
         return debts.get(position);
     }
 
-    public interface OnDeleteButtonClickListener {
+    public interface OnClickListener {
         void onDeleteButtonClicked(DebtInfo debtInfo);
+
+        void onEditClicked(int position);
     }
 
 
-    class DebtHolder extends RecyclerView.ViewHolder {
+    class DebtHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView textViewName;
         private TextView textViewAmount;
-        private Button deleteButton;
+        private ImageView deleteImageView;
+        private OnClickListener mOnClickListener;
 
-        public DebtHolder(@NonNull View itemView) {
+        public DebtHolder(@NonNull View itemView, OnClickListener onClickListener) {
             super(itemView);
+
+            mOnClickListener = onClickListener;
+
             textViewName = itemView.findViewById(R.id.textViewName);
             textViewAmount = itemView.findViewById(R.id.textViewAmount);
-            deleteButton = itemView.findViewById(R.id.delete_button);
+            deleteImageView = itemView.findViewById(R.id.delete_image_view);
+
+
+            deleteImageView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            switch (v.getId()) {
+                case R.id.delete_image_view:
+                    if (mOnClickListener != null) {
+                        mOnClickListener.onDeleteButtonClicked(getItemAtPosition(position));
+                        Log.d(TAG, "onClick: delete_image_view Clicked");
+                    }
+                    break;
+                default:
+                    Log.d(TAG, "onClick: default clicked");
+                    break;
+            }
 
+        }
     }
 }

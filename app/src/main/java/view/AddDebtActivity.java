@@ -1,4 +1,4 @@
-package com.example.debtmanager;
+package view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.w3c.dom.Text;
+import com.example.debtmanager.R;
 
 public class AddDebtActivity extends AppCompatActivity {
 

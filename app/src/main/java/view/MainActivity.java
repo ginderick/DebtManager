@@ -1,6 +1,7 @@
-package com.example.debtmanager;
+package view;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -8,11 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.debtmanager.R;
 import com.example.debtmanager.adapter.DebtListAdapter;
 
 import com.example.debtmanager.model.DebtInfo;
@@ -27,7 +30,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements DebtListAdapter.OnDeleteButtonClickListener {
+public class MainActivity extends AppCompatActivity implements DebtListAdapter.OnClickListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final int ADD_DEBT_ACTIVITY_REQUEST_CODE = 1;
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        FloatingActionButton buttonAddDebt = findViewById(R.id.button_add_debt);
+        FloatingActionButton buttonAddDebt = findViewById(R.id.fab_add_debt);
         buttonAddDebt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +92,29 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
 
     @Override
     public void onDeleteButtonClicked(DebtInfo debtInfo) {
-        debtInfoViewModel.delete(debtInfo);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Attention")
+                .setMessage("Are you sure to delete it?")
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        debtInfoViewModel.delete(debtInfo);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    @Override
+    public void onEditClicked(int position) {
+        Intent intent = new Intent(this, AddDebtActivity.class);
+        startActivity(intent);
     }
 
     @Override
