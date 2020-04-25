@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.debtmanager.R;
@@ -69,8 +71,9 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
                     }
                 });
         compositeDisposable.add(disposable);
-
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -122,6 +125,4 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
         super.onDestroy();
         compositeDisposable.dispose();
     }
-
-
 }

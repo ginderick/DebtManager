@@ -13,43 +13,75 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.debtmanager.R;
 import com.example.debtmanager.model.DebtInfo;
 
-import java.util.ArrayList;
+
+import java.util.Arrays;
 import java.util.List;
 
-public class DebtListAdapter extends RecyclerView.Adapter<DebtListAdapter.DebtHolder> {
+public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final String TAG = DebtListAdapter.class.getSimpleName();
 
-    private List<DebtInfo> debts = new ArrayList<>();
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_ITEM = 1;
+
+    private List<DebtInfo> debtInfoList;
     private OnClickListener onClickListener;
 
-    public DebtListAdapter(List<DebtInfo> debts, OnClickListener onClickListener) {
-        this.debts = debts;
+    public DebtListAdapter(List<DebtInfo> debtInfoList, OnClickListener onClickListener) {
+        this.debtInfoList = debtInfoList;
         this.onClickListener = onClickListener;
     }
 
     @NonNull
     @Override
-    public DebtHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_item, parent, false);
-        return new DebtHolder(itemView, onClickListener);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        if (viewType == TYPE_ITEM) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.recyclerview_item, parent, false);
+            return new DebtItemViewHolder(itemView, onClickListener);
+        } else if (viewType == TYPE_HEADER) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.header_layout, parent, false);
+            return new HeaderViewHolder(itemView);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DebtListAdapter.DebtHolder holder, int position) {
-        DebtInfo currentDebtInfo = debts.get(position);
-        holder.textViewName.setText(currentDebtInfo.getName());
-        holder.textViewAmount.setText(String.valueOf(currentDebtInfo.getDebtAmount()));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+        if (holder instanceof HeaderViewHolder) {
+            HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+            headerViewHolder.total_amount_text.setText("TOTAL AMOUNT");
+            headerViewHolder.amount_text.setText((Double.toString(calculateTotalDebtAmount(debtInfoList))));
+
+
+
+        } else if (holder instanceof DebtItemViewHolder) {
+            DebtItemViewHolder debtItemViewHolder = (DebtItemViewHolder) holder;
+            DebtInfo currentDebtInfo = debtInfoList.get(position - 1);
+            debtItemViewHolder.textViewName.setText(currentDebtInfo.getName());
+            debtItemViewHolder.textViewAmount.setText(String.valueOf(currentDebtInfo.getDebtAmount()));
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return TYPE_HEADER;
+        }
+        return TYPE_ITEM;
     }
 
     @Override
     public int getItemCount() {
-        return debts.size();
+        return debtInfoList.size()+1;
     }
 
     public DebtInfo getItemAtPosition(int position) {
-        return debts.get(position);
+        return debtInfoList.get(position -1);
     }
 
     public interface OnClickListener {
@@ -58,15 +90,14 @@ public class DebtListAdapter extends RecyclerView.Adapter<DebtListAdapter.DebtHo
         void onEditClicked(int position);
     }
 
-
-    class DebtHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class DebtItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView textViewName;
         private TextView textViewAmount;
         private ImageView deleteImageView;
         private OnClickListener mOnClickListener;
 
-        public DebtHolder(@NonNull View itemView, OnClickListener onClickListener) {
+        public DebtItemViewHolder(@NonNull View itemView, OnClickListener onClickListener) {
             super(itemView);
 
             mOnClickListener = onClickListener;
@@ -74,8 +105,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<DebtListAdapter.DebtHo
             textViewName = itemView.findViewById(R.id.textViewName);
             textViewAmount = itemView.findViewById(R.id.textViewAmount);
             deleteImageView = itemView.findViewById(R.id.delete_image_view);
-
-
             deleteImageView.setOnClickListener(this);
         }
 
@@ -86,14 +115,35 @@ public class DebtListAdapter extends RecyclerView.Adapter<DebtListAdapter.DebtHo
                 case R.id.delete_image_view:
                     if (mOnClickListener != null) {
                         mOnClickListener.onDeleteButtonClicked(getItemAtPosition(position));
-                        Log.d(TAG, "onClick: delete_image_view Clicked");
                     }
                     break;
                 default:
-                    Log.d(TAG, "onClick: default clicked");
                     break;
             }
 
         }
+    }
+
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        TextView total_amount_text, amount_text;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+
+            total_amount_text = itemView.findViewById(R.id.total_amount_text);
+            amount_text = itemView.findViewById(R.id.amount_text);
+
+        }
+    }
+
+    public double calculateTotalDebtAmount(List<DebtInfo> debtInfoList) {
+
+        double total = 0;
+
+        for (DebtInfo debtInfo : debtInfoList) {
+            total += debtInfo.getDebtAmount();
+        }
+        return total;
     }
 }
