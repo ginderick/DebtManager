@@ -1,11 +1,10 @@
-package view;
+package com.example.debtmanager.view;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.debtmanager.R;
@@ -24,6 +23,7 @@ import com.example.debtmanager.model.DebtInfo;
 import com.example.debtmanager.viewmodel.DebtInfoViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -36,10 +36,12 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final int ADD_DEBT_ACTIVITY_REQUEST_CODE = 1;
+    public static final int EDIT_DEBT_ACTIVITY_REQUEST_CODE = 2;
 
     private DebtInfoViewModel debtInfoViewModel;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private DebtListAdapter debtListAdapter;
+    private ArrayList<DebtInfo> mDebts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
         buttonAddDebt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddDebtActivity.class);
+                Intent intent = new Intent(MainActivity.this, DebtActivity.class);
                 startActivityForResult(intent, ADD_DEBT_ACTIVITY_REQUEST_CODE);
             }
         });
@@ -66,11 +68,13 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
                     @Override
                     public void accept(List<DebtInfo> debtInfo) throws Exception {
                         debtListAdapter = new DebtListAdapter(debtInfo, MainActivity.this);
+                        debtListAdapter.setDebtInfoList(debtInfo);
                         recyclerView.setAdapter(debtListAdapter);
 
                     }
                 });
         compositeDisposable.add(disposable);
+
     }
 
 
@@ -80,14 +84,24 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ADD_DEBT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            String name = data.getStringExtra(AddDebtActivity.EXTRA_NAME);
-            String amount = data.getStringExtra(AddDebtActivity.EXTRA_AMOUNT);
+            String name = data.getStringExtra(DebtActivity.EXTRA_NAME);
+            String amount = data.getStringExtra(DebtActivity.EXTRA_AMOUNT);
             int debtAmount = Integer.parseInt(amount);
 
             DebtInfo debtInfo = new DebtInfo(name, debtAmount);
             debtInfoViewModel.insert(debtInfo);
 
             Toast.makeText(this, "debt saved", Toast.LENGTH_SHORT).show();
+
+        } else if (requestCode == EDIT_DEBT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            int id = data.getIntExtra(DebtActivity.EXTRA_ID, -1);
+            String name = data.getStringExtra(DebtActivity.EXTRA_NAME);
+            String amount = data.getStringExtra(DebtActivity.EXTRA_AMOUNT);
+            int debtAmount = Integer.parseInt(amount);
+            DebtInfo debtInfo = new DebtInfo(name, debtAmount);
+            debtInfo.setId(id);
+            debtInfoViewModel.update(debtInfo);
+
         } else {
             Toast.makeText(this, "debt not saved", Toast.LENGTH_SHORT).show();
         }
@@ -115,9 +129,13 @@ public class MainActivity extends AppCompatActivity implements DebtListAdapter.O
     }
 
     @Override
-    public void onEditClicked(int position) {
-        Intent intent = new Intent(this, AddDebtActivity.class);
-        startActivity(intent);
+    public void onEditClicked(DebtInfo debtInfo) {
+        Intent intent = new Intent(MainActivity.this, DebtActivity.class);
+        intent.putExtra(DebtActivity.EXTRA_ID, debtInfo.getId());
+        intent.putExtra(DebtActivity.EXTRA_NAME, debtInfo.getName());
+        intent.putExtra(DebtActivity.EXTRA_AMOUNT, String.valueOf(debtInfo.getDebtAmount()));
+        startActivityForResult(intent, EDIT_DEBT_ACTIVITY_REQUEST_CODE);
+        Log.d(TAG, "onEditClicked: onEditClicked");
     }
 
     @Override

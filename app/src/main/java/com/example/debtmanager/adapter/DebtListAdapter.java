@@ -84,10 +84,9 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return debtInfoList.get(position -1);
     }
 
-    public interface OnClickListener {
-        void onDeleteButtonClicked(DebtInfo debtInfo);
-
-        void onEditClicked(int position);
+    public void setDebtInfoList(List<DebtInfo> debtInfoList) {
+        this.debtInfoList = debtInfoList;
+        notifyDataSetChanged();
     }
 
     private class DebtItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -95,6 +94,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView textViewName;
         private TextView textViewAmount;
         private ImageView deleteImageView;
+        private ImageView editImageView;
         private OnClickListener mOnClickListener;
 
         public DebtItemViewHolder(@NonNull View itemView, OnClickListener onClickListener) {
@@ -105,7 +105,10 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             textViewName = itemView.findViewById(R.id.textViewName);
             textViewAmount = itemView.findViewById(R.id.textViewAmount);
             deleteImageView = itemView.findViewById(R.id.delete_image_view);
+            editImageView = itemView.findViewById(R.id.edit_image_view);
             deleteImageView.setOnClickListener(this);
+            editImageView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
@@ -113,11 +116,19 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int position = getAdapterPosition();
             switch (v.getId()) {
                 case R.id.delete_image_view:
+                    Log.d(TAG, "onClick: detele_image_view clicked");
                     if (mOnClickListener != null) {
                         mOnClickListener.onDeleteButtonClicked(getItemAtPosition(position));
                     }
                     break;
+                case R.id.edit_image_view:
+                    Log.d(TAG, "onClick: debt_item clicked");
+                    if (mOnClickListener != null) {
+                        mOnClickListener.onEditClicked(getItemAtPosition(position));
+                    }
+                    break;
                 default:
+                    Log.d(TAG, "onClick: default clicked");
                     break;
             }
 
@@ -135,6 +146,11 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             amount_text = itemView.findViewById(R.id.amount_text);
 
         }
+    }
+
+    public interface OnClickListener {
+        void onDeleteButtonClicked(DebtInfo debtInfo);
+        void onEditClicked(DebtInfo debtInfo);
     }
 
     public double calculateTotalDebtAmount(List<DebtInfo> debtInfoList) {

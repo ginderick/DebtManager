@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.cardview.widget.CardView
+    android:id="@+id/debt_item"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    android:foreground="?android:selectableItemBackground">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -49,6 +51,20 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="8dp"
                 android:src="@drawable/ic_delete_black_24dp"
+                android:text="Delete" />
+
+            <ImageView
+                android:id="@+id/edit_image_view"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="54dp"
+                android:src="@drawable/ic_edit_black_24dp"
                 android:text="Delete" />
 
         </RelativeLayout>

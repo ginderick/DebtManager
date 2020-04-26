@@ -34,4 +34,8 @@ public class DebtInfoViewModel extends AndroidViewModel {
     public void delete(DebtInfo debtInfo) {
         debtInfoRepository.deleteDebtInfo(debtInfo);
     }
+
+    public void update(DebtInfo debtInfo) {
+        debtInfoRepository.updateDebtInfo(debtInfo);
+    }
 }

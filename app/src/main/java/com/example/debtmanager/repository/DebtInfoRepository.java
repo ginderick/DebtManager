@@ -98,5 +98,29 @@ public class DebtInfoRepository {
                 });
     }
 
+    public void updateDebtInfo(DebtInfo debtInfo) {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                mDebtDao.updateDebt(debtInfo);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(TAG, "onSubscribe: Called");
+                    }
 
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete: Called");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "onError: " + e.getMessage());
+                    }
+                });
+    }
 }

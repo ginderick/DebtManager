@@ -6,6 +6,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.debtmanager.model.DebtInfo;
 
@@ -23,6 +24,9 @@ public interface DebtDao {
 
     @Delete
     void deleteDebt(DebtInfo debtInfo);
+
+    @Update
+    void updateDebt(DebtInfo debtInfo);
 
     //Use LiveData to respond to data changes
     @Query("SELECT * FROM info_table")

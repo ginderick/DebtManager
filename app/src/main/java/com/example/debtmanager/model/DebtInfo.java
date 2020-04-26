@@ -31,6 +31,7 @@ public class DebtInfo {
         return debtAmount;
     }
 
+
     public int getId() {
         return id;
     }
