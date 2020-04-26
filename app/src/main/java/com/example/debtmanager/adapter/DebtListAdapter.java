@@ -86,7 +86,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setDebtInfoList(List<DebtInfo> debtInfoList) {
         this.debtInfoList = debtInfoList;
-        notifyDataSetChanged();
     }
 
     private class DebtItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -122,9 +121,10 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                     break;
                 case R.id.edit_image_view:
-                    Log.d(TAG, "onClick: debt_item clicked");
+
                     if (mOnClickListener != null) {
                         mOnClickListener.onEditClicked(getItemAtPosition(position));
+                        Log.d(TAG, "onClick: debt_item clicked " + getItemAtPosition(position));
                     }
                     break;
                 default:
