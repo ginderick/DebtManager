@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -21,11 +22,11 @@ import com.example.debtmanager.R;
 import com.example.debtmanager.adapter.DebtListAdapter;
 import com.example.debtmanager.model.DebtInfo;
 import com.example.debtmanager.view.DebtActivity;
-import com.example.debtmanager.view.MainActivity;
 import com.example.debtmanager.viewmodel.DebtInfoViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -46,8 +47,8 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
     private DebtInfoViewModel debtInfoViewModel;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private DebtListAdapter debtListAdapter;
-    private ArrayList<DebtInfo> mDebts = new ArrayList<>();
     private RecyclerView recyclerView;
+
 
 
     public DebtFragment() {
@@ -108,6 +109,7 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
         }
     }
 
+
     public static DebtFragment newInstance() {
         return new DebtFragment();
     }
@@ -157,6 +159,7 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
                 .show();
     }
 
+
     @Override
     public void onEditClicked(DebtInfo debtInfo) {
 
@@ -174,4 +177,6 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
         super.onDestroy();
         compositeDisposable.dispose();
     }
+
+
 }
