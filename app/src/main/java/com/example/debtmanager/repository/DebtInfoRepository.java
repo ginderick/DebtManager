@@ -36,8 +36,6 @@ public class DebtInfoRepository {
         mDebtInfo = mDebtDao.getAllDebtInfo();
     }
 
-
-
     //Get all DebtInfo
     public Flowable<List<DebtInfo>> getAllDebtInfo() {
         return mDebtDao.getAllDebtInfo();

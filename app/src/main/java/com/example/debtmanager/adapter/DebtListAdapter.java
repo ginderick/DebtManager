@@ -64,6 +64,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             DebtInfo currentDebtInfo = debtInfoList.get(position - 1);
             debtItemViewHolder.textViewName.setText(currentDebtInfo.getName());
             debtItemViewHolder.textViewAmount.setText(String.valueOf(currentDebtInfo.getDebtAmount()));
+            debtItemViewHolder.textViewDescription.setText(currentDebtInfo.getDescription());
         }
     }
 
@@ -92,6 +93,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         private TextView textViewName;
         private TextView textViewAmount;
+        private TextView textViewDescription;
         private ImageView deleteImageView;
         private ImageView editImageView;
         private OnClickListener mOnClickListener;
@@ -103,6 +105,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             textViewName = itemView.findViewById(R.id.textViewName);
             textViewAmount = itemView.findViewById(R.id.textViewAmount);
+            textViewDescription = itemView.findViewById(R.id.textView_description);
             deleteImageView = itemView.findViewById(R.id.delete_image_view);
             editImageView = itemView.findViewById(R.id.edit_image_view);
             deleteImageView.setOnClickListener(this);

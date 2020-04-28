@@ -11,7 +11,7 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="70dp">
+            android:layout_height="110dp">
 
             <ImageView
                 android:id="@+id/imageViewDebt"
@@ -41,6 +41,58 @@
                 android:layout_marginLeft="8dp"
                 android:layout_toRightOf="@id/imageViewDebt"
                 tools:text="Gin" />
+
+
+            <TextView
+                android:id="@+id/textView_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="67dp"
+                android:layout_marginTop="13dp"
+                android:layout_toRightOf="@+id/textViewAmount"
+                tools:text = "Description" />
+
+            <TextView
+                android:id="@+id/textView_due"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_description"
+                android:layout_marginLeft="-16dp"
+                android:layout_marginTop="33dp"
+                android:layout_toRightOf="@id/textViewAmount"
+                tools:text="Due date: " />
+
+            <TextView
+                android:id="@+id/textView_dueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_description"
+                android:layout_marginLeft="45dp"
+                android:layout_marginTop="35dp"
+                android:layout_toRightOf="@id/textView_due"
+                tools:text="Mar 13, 1995" />
+
+            <TextView
+                android:id="@+id/textView_created"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_due"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="73dp"
+                android:layout_marginLeft="73dp"
+                android:layout_marginTop="3dp"
+                tools:text="Created date: " />
+
+            <TextView
+                android:id="@+id/textView_createdDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_dueDate"
+                android:layout_marginLeft="45dp"
+                android:layout_toRightOf="@id/textView_due"
+                tools:text="Mar 13, 1995" />
 
             <ImageView
                 android:id="@+id/delete_image_view"

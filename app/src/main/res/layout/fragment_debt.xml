@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".view.fragment.DebtFragment">
 
+
     <ImageView
         android:id="@+id/header"
         android:layout_width="0dp"
