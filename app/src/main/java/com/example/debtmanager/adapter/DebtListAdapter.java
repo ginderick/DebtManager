@@ -1,6 +1,7 @@
 package com.example.debtmanager.adapter;
 
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtmanager.R;
 import com.example.debtmanager.model.DebtInfo;
+import com.example.debtmanager.utils.DateConverter;
 
 
-import java.util.Arrays;
 import java.util.List;
 
 public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -26,6 +27,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<DebtInfo> debtInfoList;
     private OnClickListener onClickListener;
+
 
     public DebtListAdapter(List<DebtInfo> debtInfoList, OnClickListener onClickListener) {
         this.debtInfoList = debtInfoList;
@@ -65,6 +67,9 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             debtItemViewHolder.textViewName.setText(currentDebtInfo.getName());
             debtItemViewHolder.textViewAmount.setText(String.valueOf(currentDebtInfo.getDebtAmount()));
             debtItemViewHolder.textViewDescription.setText(currentDebtInfo.getDescription());
+            debtItemViewHolder.textViewCreatedDate.setText(DateConverter.millisToString(currentDebtInfo.getCreatedDate()));
+            debtItemViewHolder.textViewDueDate.setText(DateConverter.millisToString(currentDebtInfo.getDueDate()));
+
         }
     }
 
@@ -81,6 +86,10 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return debtInfoList.size()+1;
     }
 
+    public int getSelectedItemCount() {
+        return debtInfoList.size();
+    }
+
     public DebtInfo getItemAtPosition(int position) {
         return debtInfoList.get(position -1);
     }
@@ -94,6 +103,8 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView textViewName;
         private TextView textViewAmount;
         private TextView textViewDescription;
+        private TextView textViewCreatedDate;
+        private TextView textViewDueDate;
         private ImageView deleteImageView;
         private ImageView editImageView;
         private OnClickListener mOnClickListener;
@@ -106,8 +117,10 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             textViewName = itemView.findViewById(R.id.textViewName);
             textViewAmount = itemView.findViewById(R.id.textViewAmount);
             textViewDescription = itemView.findViewById(R.id.textView_description);
-            deleteImageView = itemView.findViewById(R.id.delete_image_view);
+            textViewCreatedDate = itemView.findViewById(R.id.textView_createdDate);
+            textViewDueDate = itemView.findViewById(R.id.textView_dueDate);
             editImageView = itemView.findViewById(R.id.edit_image_view);
+            deleteImageView = itemView.findViewById(R.id.delete_image_view);
             deleteImageView.setOnClickListener(this);
             editImageView.setOnClickListener(this);
             itemView.setOnClickListener(this);
@@ -120,7 +133,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 case R.id.delete_image_view:
                     Log.d(TAG, "onClick: detele_image_view clicked");
                     if (mOnClickListener != null) {
-                        mOnClickListener.onDeleteButtonClicked(getItemAtPosition(position));
+                        mOnClickListener.onDeleteClicked(getItemAtPosition(position));
                     }
                     break;
                 case R.id.edit_image_view:
@@ -136,6 +149,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
 
         }
+
     }
 
     private class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -152,9 +166,10 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public interface OnClickListener {
-        void onDeleteButtonClicked(DebtInfo debtInfo);
         void onEditClicked(DebtInfo debtInfo);
+        void onDeleteClicked(DebtInfo debtInfo);
     }
+
 
     public double calculateTotalDebtAmount(List<DebtInfo> debtInfoList) {
 
@@ -165,4 +180,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         return total;
     }
+
+
 }

@@ -67,15 +67,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginRight="32dp"
         android:layout_marginBottom="8dp"
-        android:text="Due Date: Apr 27, 2020" />
+         />
 
     <Button
         android:id="@+id/date_due_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:text="Due Date: Apr 27, 2020" />
+        android:layout_marginRight="32dp" />
 
 
 </LinearLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView
+<LinearLayout
     android:id="@+id/debt_item"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -61,6 +61,7 @@
                 android:layout_marginLeft="-16dp"
                 android:layout_marginTop="33dp"
                 android:layout_toRightOf="@id/textViewAmount"
+                android:text="Due date: "
                 tools:text="Due date: " />
 
             <TextView
@@ -83,6 +84,7 @@
                 android:layout_marginStart="73dp"
                 android:layout_marginLeft="73dp"
                 android:layout_marginTop="3dp"
+                android:text="Created date: "
                 tools:text="Created date: " />
 
             <TextView
@@ -100,8 +102,11 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="8dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="010dp"
                 android:src="@drawable/ic_delete_black_24dp"
                 android:text="Delete" />
 
@@ -121,4 +126,4 @@
 
         </RelativeLayout>
 
-    </androidx.cardview.widget.CardView>
+    </LinearLayout>

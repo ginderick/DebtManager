@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.example.debtmanager.R;
 import com.example.debtmanager.adapter.DebtListAdapter;
 import com.example.debtmanager.model.DebtInfo;
+import com.example.debtmanager.utils.DateConverter;
 import com.example.debtmanager.view.DebtActivity;
 import com.example.debtmanager.viewmodel.DebtInfoViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,7 +41,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 
-public class DebtFragment extends Fragment implements DebtListAdapter.OnClickListener{
+public class DebtFragment extends Fragment implements DebtListAdapter.OnClickListener {
     
     public static final String TAG = "DebtFragment";
 
@@ -50,9 +52,6 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private DebtListAdapter debtListAdapter;
     private RecyclerView recyclerView;
-    private List<DebtInfo> debtInfo = new ArrayList<>();
-
-
 
     public DebtFragment() {
         // Required empty public constructor
@@ -75,6 +74,9 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
                 startActivityForResult(intent, ADD_DEBT_ACTIVITY_REQUEST_CODE);
             }
         });
+
+
+
 
         return view;
 
@@ -113,9 +115,16 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
             String name = data.getStringExtra(DebtActivity.EXTRA_NAME);
             String amount = data.getStringExtra(DebtActivity.EXTRA_AMOUNT);
             String description = data.getStringExtra(DebtActivity.EXTRA_DESCRIPTION);
+            long createdDate = data.getLongExtra(DebtActivity.EXTRA_DATE_CREATE, -1);
+            long dueDate = data.getLongExtra(DebtActivity.EXTRA_DATE_DUE, -1);
+
             int debtAmount = Integer.parseInt(amount);
 
             DebtInfo debtInfo = new DebtInfo(name, debtAmount, description);
+            debtInfo.setCreatedDate(createdDate);
+            debtInfo.setDueDate(dueDate);
+            Log.d(TAG, "onActivityResult: createdDate" + DateConverter.millisToString(debtInfo.getCreatedDate()));
+            Log.d(TAG, "onActivityResult: dueDate" + DateConverter.millisToString(debtInfo.getDueDate()));
             debtInfoViewModel.insert(debtInfo);
 
             Toast.makeText(getActivity(), "debt saved", Toast.LENGTH_SHORT).show();
@@ -125,8 +134,17 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
             String name = data.getStringExtra(DebtActivity.EXTRA_NAME);
             String amount = data.getStringExtra(DebtActivity.EXTRA_AMOUNT);
             String description = data.getStringExtra(DebtActivity.EXTRA_DESCRIPTION);
+            long createdDate = data.getLongExtra(DebtActivity.EXTRA_DATE_CREATE, -1);
+            long dueDate = data.getLongExtra(DebtActivity.EXTRA_DATE_DUE, -1);
+
+
             int debtAmount = Integer.parseInt(amount);
             DebtInfo debtInfo = new DebtInfo(name, debtAmount, description);
+            debtInfo.setCreatedDate(createdDate);
+            debtInfo.setDueDate(dueDate);
+
+            Log.d(TAG, "onActivityResult: createdDate EditDebt" + DateConverter.millisToString(debtInfo.getCreatedDate()));
+            Log.d(TAG, "onActivityResult: dueDate EditDebt" + DateConverter.millisToString(debtInfo.getDueDate()));
             debtInfo.setId(id);
             debtInfoViewModel.update(debtInfo);
 
@@ -142,8 +160,51 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
         return new DebtFragment();
     }
 
+
+//    public void onDeleteButtonClicked() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        builder.setTitle("Attention")
+//                .setMessage("Are you sure to delete it?")
+//                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+////                        debtInfoViewModel.delete(debtInfo);
+//                    }
+//                })
+//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                })
+//                .create()
+//                .show();
+//    }
+
     @Override
-    public void onDeleteButtonClicked(DebtInfo debtInfo) {
+    public void onEditClicked(DebtInfo debtInfo) {
+
+        Log.d(TAG, "onEditClicked: DebtFragment Called");
+        Intent intent = new Intent(getActivity(), DebtActivity.class);
+        intent.putExtra(DebtActivity.EXTRA_ID, debtInfo.getId());
+        intent.putExtra(DebtActivity.EXTRA_NAME, debtInfo.getName());
+        intent.putExtra(DebtActivity.EXTRA_AMOUNT, String.valueOf(debtInfo.getDebtAmount()));
+        intent.putExtra(DebtActivity.EXTRA_DESCRIPTION, debtInfo.getDescription());
+        intent.putExtra(DebtActivity.EXTRA_DATE_CREATE, debtInfo.getCreatedDate());
+        intent.putExtra(DebtActivity.EXTRA_DATE_DUE, debtInfo.getDueDate());
+        startActivityForResult(intent, EDIT_DEBT_ACTIVITY_REQUEST_CODE);
+        Log.d(TAG, "onEditClicked: " + DateConverter.millisToString(debtInfo.getCreatedDate()));
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
+    }
+
+    @Override
+    public void onDeleteClicked(DebtInfo debtInfo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Attention")
                 .setMessage("Are you sure to delete it?")
@@ -164,24 +225,7 @@ public class DebtFragment extends Fragment implements DebtListAdapter.OnClickLis
     }
 
 
-    @Override
-    public void onEditClicked(DebtInfo debtInfo) {
 
-        Log.d(TAG, "onEditClicked: DebtFragment Called");
-        Intent intent = new Intent(getActivity(), DebtActivity.class);
-        intent.putExtra(DebtActivity.EXTRA_ID, debtInfo.getId());
-        intent.putExtra(DebtActivity.EXTRA_NAME, debtInfo.getName());
-        intent.putExtra(DebtActivity.EXTRA_AMOUNT, String.valueOf(debtInfo.getDebtAmount()));
-        intent.putExtra(DebtActivity.EXTRA_DESCRIPTION, debtInfo.getDescription());
-        startActivityForResult(intent, EDIT_DEBT_ACTIVITY_REQUEST_CODE);
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        compositeDisposable.dispose();
-    }
 
 
 }

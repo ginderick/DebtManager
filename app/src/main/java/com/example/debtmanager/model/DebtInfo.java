@@ -8,8 +8,6 @@ import androidx.room.TypeConverters;
 
 import com.example.debtmanager.utils.DateConverter;
 
-import java.util.Date;
-
 @Entity(tableName = "info_table")
 public class DebtInfo {
 
@@ -27,11 +25,11 @@ public class DebtInfo {
 
     @ColumnInfo(name = "dueDate")
     @TypeConverters({DateConverter.class})
-    private Date dueDate;
+    private long dueDate;
 
     @ColumnInfo(name = "createdDate")
     @TypeConverters({DateConverter.class})
-    private Date createdDate;
+    private long createdDate;
 
     public DebtInfo(String name, int debtAmount, String description) {
         this.name = name;
@@ -57,11 +55,11 @@ public class DebtInfo {
         return description;
     }
 
-    public Date getDueDate() {
+    public long getDueDate() {
         return dueDate;
     }
 
-    public Date getCreatedDate() {
+    public long getCreatedDate() {
         return createdDate;
     }
 
@@ -69,11 +67,11 @@ public class DebtInfo {
         this.id = id;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(long dueDate) {
         this.dueDate = dueDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(long createdDate) {
         this.createdDate = createdDate;
     }
 }
